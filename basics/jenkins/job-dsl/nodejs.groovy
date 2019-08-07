@@ -25,7 +25,7 @@ job('NodeJS Docker example') {
         }
     }
     triggers {
-        scm('H/5 * * * *')
+        scm('H/5 * * * *') 
     }
     wrappers {
         nodejs('nodejs') // this is the name of the NodeJS installation in 
@@ -43,4 +43,28 @@ job('NodeJS Docker example') {
             skipDecorate()
         }
     }
+}
+
+
+pipelineJob('DSL_Pipeline') {
+
+  def repo = "https://github.com/Kolikant/docker-cicd.git"
+
+  triggers {
+    scm('H/5 * * * *')
+  }
+  description("Pipeline for $repo")
+
+  definition {
+    cpsScm {
+      scm {
+        git {
+          remote { url(repo) }
+          branches('master')
+          scriptPath('./basics/misc/Jenkinsfile')
+          extensions { }  // required as otherwise it may try to tag the repo, which you may not want
+        }
+      }
+    }
+  }
 }
